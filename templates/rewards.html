@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}Rewards{% endblock %}
+{% block content %}
+<div class="section-head"><h1>Rewards</h1></div>
+
+<section class="stats">
+  <div class="card stat"><div class="stat-icon">🏆</div><div><div class="stat-num" id="rTotal">0</div><div class="muted">total points</div></div></div>
+  <div class="card stat"><div class="stat-icon">🔥</div><div><div class="stat-num" id="rStreak">0</div><div class="muted">current streak</div></div></div>
+  <div class="card stat"><div class="stat-icon">🥇</div><div><div class="stat-num" id="rLongest">0</div><div class="muted">longest streak</div></div></div>
+  <div class="card stat"><div class="stat-icon">✅</div><div><div class="stat-num" id="rDone">0</div><div class="muted">tasks completed</div></div></div>
+</section>
+
+<section class="card" id="todayReward"></section>
+
+<section>
+  <div class="section-head"><h2>Last 7 active days</h2></div>
+  <div class="card"><div class="bars" id="bars"></div></div>
+</section>
+
+<section>
+  <div class="section-head"><h2>Badges</h2></div>
+  <div class="badges" id="badges"></div>
+</section>
+
+<section class="card how">
+  <h3>How rewards work</h3>
+  <ul>
+    <li><b id="hPer">10</b> points for every task you complete with a proof photo.</li>
+    <li><b id="hBonus">20</b> bonus points at the end of the day if <i>all</i> tasks due that day are done.</li>
+    <li>Complete at least one task each day to grow your streak.</li>
+    <li>Every few completed tasks unlocks a short relaxation break 🫧</li>
+  </ul>
+</section>
+{% endblock %}

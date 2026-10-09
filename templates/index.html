@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<section class="hero card">
+  <div>
+    <h1 id="greeting">Hello, {{ user['name'].split()[0] }} 👋</h1>
+    <p class="muted" id="todayDate"></p>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label"><span id="progressText">Loading…</span><b id="progressPct">0%</b></div>
+    <div class="progress"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+  </div>
+</section>
+
+<section class="stats">
+  <div class="card stat"><div class="stat-icon">⭐</div><div><div class="stat-num" id="statToday">0</div><div class="muted">points today</div></div></div>
+  <div class="card stat"><div class="stat-icon">🔥</div><div><div class="stat-num" id="statStreak">0</div><div class="muted">day streak</div></div></div>
+  <div class="card stat"><div class="stat-icon">🏆</div><div><div class="stat-num" id="statTotal">0</div><div class="muted">total points</div></div></div>
+  <div class="card stat break-card" id="breakCard"></div>
+</section>
+
+<section id="yesterdayCard" class="card reward-banner" hidden></section>
+<section id="dayEndCard" class="card day-end" hidden></section>
+
+<section>
+  <div class="section-head">
+    <h2>Today's tasks</h2>
+    <a class="link" href="{{ url_for('tasks_page') }}">All tasks →</a>
+  </div>
+  <div id="taskList" class="task-list"></div>
+</section>
+{% endblock %}

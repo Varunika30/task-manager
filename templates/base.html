@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Task Manager{% endblock %} · TaskNest</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9C%85%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script>
+    // apply saved theme before paint
+    try { document.documentElement.dataset.theme = localStorage.getItem('theme') || 'light'; } catch (e) {}
+  </script>
+</head>
+<body data-page="{{ page }}">
+
+<header class="topbar">
+  <a class="brand" href="{{ url_for('dashboard') }}"><span class="brand-logo">✅</span> TaskNest</a>
+  <nav class="nav" aria-label="Main">
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if page == 'dashboard' }}"><span>🏠</span><em>Home</em></a>
+    <a href="{{ url_for('tasks_page') }}" class="{{ 'active' if page == 'tasks' }}"><span>📋</span><em>Tasks</em></a>
+    <a href="{{ url_for('calendar_page') }}" class="{{ 'active' if page == 'calendar' }}"><span>📅</span><em>Calendar</em></a>
+    <a href="{{ url_for('rewards_page') }}" class="{{ 'active' if page == 'rewards' }}"><span>🏆</span><em>Rewards</em></a>
+    <a href="{{ url_for('game_page') }}" class="{{ 'active' if page == 'game' }}"><span>🫧</span><em>Break</em><i class="dot" id="gameDot" hidden></i></a>
+  </nav>
+  <div class="top-actions">
+    <span class="chip" title="Current streak">🔥 <b id="chipStreak">0</b></span>
+    <span class="chip" title="Total points">⭐ <b id="chipPoints">0</b></span>
+    <button class="icon-btn" id="bellBtn" title="Enable reminder notifications" hidden>🔔</button>
+    <button class="icon-btn" id="themeBtn" title="Toggle dark mode">🌙</button>
+    <button class="icon-btn" id="logoutBtn" title="Sign out ({{ user['name'] }})">⎋</button>
+  </div>
+</header>
+
+<main class="container">
+  {% block content %}{% endblock %}
+  <p class="updated" id="lastUpdated">&nbsp;</p>
+</main>
+
+<button class="fab" id="fabAdd" title="Add task" aria-label="Add task">＋</button>
+
+<!-- Add / edit task -->
+<div class="modal" id="taskModal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="taskModalTitle">
+    <button class="close" data-close aria-label="Close">×</button>
+    <h2 id="taskModalTitle">New task</h2>
+    <form id="taskForm" autocomplete="off">
+      <label>Title
+        <input name="title" maxlength="120" required placeholder="What needs to be done?">
+      </label>
+      <label>Notes <span class="muted">(optional)</span>
+        <textarea name="description" rows="2" maxlength="1000" placeholder="Any details…"></textarea>
+      </label>
+      <div class="row">
+        <label>Category
+          <input name="category" maxlength="40" list="cats" value="General">
+          <datalist id="cats"><option>General</option><option>Study</option><option>Work</option><option>Health</option><option>Home</option><option>Planning</option></datalist>
+        </label>
+        <label>Priority
+          <select name="priority"><option>Low</option><option selected>Medium</option><option>High</option></select>
+        </label>
+      </div>
+      <div class="row">
+        <label>Due
+          <input type="datetime-local" name="due_datetime" required>
+        </label>
+        <label>Remind me
+          <select name="reminder_interval_minutes">
+            <option value="0">Never</option>
+            <option value="15">Every 15 min</option>
+            <option value="30">Every 30 min</option>
+            <option value="60" selected>Every hour</option>
+            <option value="120">Every 2 hours</option>
+            <option value="180">Every 3 hours</option>
+          </select>
+        </label>
+      </div>
+      <p class="form-error" id="taskError" hidden></p>
+      <div class="actions">
+        <button type="button" class="btn ghost" data-close>Cancel</button>
+        <button class="btn primary" type="submit">Save task</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Proof upload -->
+<div class="modal" id="proofModal" hidden>
+  <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="proofTitle">
+    <button class="close" data-close aria-label="Close">×</button>
+    <h2 id="proofTitle">📷 Show your work</h2>
+    <p class="muted" id="proofTask"></p>
+    <p>Upload a photo of the finished work. The task is fully completed once the photo is submitted.</p>
+    <form id="proofForm">
+      <label class="drop" id="proofDrop">
+        <input type="file" name="photo" id="proofFile" accept="image/jpeg,image/png,image/webp" required hidden>
+        <img id="proofPreview" alt="" hidden>
+        <span id="proofHint">Tap to choose a photo<br><small>JPG, PNG or WEBP · max 5 MB</small></span>
+      </label>
+      <p class="form-error" id="proofError" hidden></p>
+      <div class="actions">
+        <button type="button" class="btn ghost" data-close>Later</button>
+        <button class="btn primary" type="submit" id="proofSubmit">Submit &amp; complete</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Break unlocked -->
+<div class="modal" id="unlockModal" hidden>
+  <div class="dialog center" role="dialog" aria-modal="true">
+    <div class="big-emoji">🫧</div>
+    <h2>You earned a break!</h2>
+    <p>Great work. A short, calming bubble game is unlocked for you.</p>
+    <div class="actions">
+      <button class="btn ghost" data-close>Later</button>
+      <a class="btn primary" href="{{ url_for('game_page') }}">Take a break</a>
+    </div>
+  </div>
+</div>
+
+<div id="toasts" aria-live="polite"></div>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

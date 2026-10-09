@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Break{% endblock %}
+{% block content %}
+<div class="section-head"><h1>Take a break</h1></div>
+
+<section class="card game-card">
+  <!-- Locked -->
+  <div id="gLocked" class="game-pane" hidden>
+    <div class="big-emoji">🔒</div>
+    <h2>Your next break is on its way</h2>
+    <p class="muted" id="lockedText"></p>
+    <div class="dots" id="lockedDots"></div>
+    <a class="btn primary" href="{{ url_for('tasks_page') }}">Go to my tasks</a>
+  </div>
+
+  <!-- Ready -->
+  <div id="gReady" class="game-pane" hidden>
+    <div class="big-emoji">🫧</div>
+    <h2>Bubble pop break</h2>
+    <p class="muted" id="readyText"></p>
+    <p>Breathe slowly and pop the bubbles. There is no score to chase and no way to lose.</p>
+    <button class="btn primary big" id="gStart">Start break</button>
+  </div>
+
+  <!-- Playing -->
+  <div id="gPlaying" class="game-pane" hidden>
+    <div class="game-hud">
+      <span>⏳ <b id="gTime">3:00</b></span>
+      <span id="gBreath" class="breath">Breathe in…</span>
+      <span>🫧 <b id="gCount">0</b></span>
+    </div>
+    <div class="game-area" id="gArea"></div>
+    <button class="btn ghost small" id="gEnd">End break</button>
+  </div>
+
+  <!-- Finished -->
+  <div id="gDone" class="game-pane" hidden>
+    <div class="big-emoji">🌿</div>
+    <h2>Nice and refreshed!</h2>
+    <p class="muted" id="doneText"></p>
+    <a class="btn primary" href="{{ url_for('dashboard') }}">Back to my tasks</a>
+  </div>
+</section>
+{% endblock %}
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+{% endblock %}

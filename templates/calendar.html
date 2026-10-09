@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Calendar{% endblock %}
+{% block content %}
+<div class="section-head">
+  <h1>Calendar</h1>
+  <div class="seg" id="viewSwitch">
+    <button class="active" data-view="month">Month</button>
+    <button data-view="week">Week</button>
+    <button data-view="list">List</button>
+  </div>
+</div>
+
+<div class="cal-nav">
+  <button class="icon-btn" id="calPrev" aria-label="Previous">‹</button>
+  <h2 id="calTitle"></h2>
+  <button class="icon-btn" id="calNext" aria-label="Next">›</button>
+  <button class="btn small ghost" id="calToday">Today</button>
+</div>
+
+<div id="calBody"></div>
+
+<section id="dayPanel" class="card day-panel" hidden>
+  <div class="section-head">
+    <h2 id="dayTitle"></h2>
+    <button class="btn small primary" id="dayAdd">＋ Add task</button>
+  </div>
+  <div id="dayTasks" class="task-list"></div>
+</section>
+{% endblock %}
